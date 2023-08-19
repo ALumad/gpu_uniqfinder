@@ -1,1 +1,3 @@
-# gpu_uniqfinder
+# Find unique numbers with OpenCL
+
+
