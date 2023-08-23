@@ -1,9 +1,9 @@
 #include "GPUWrapper.h"
 #include <cstring>
 #include <string>
-#include "define.h"
 #include <CL/cl.h>
 #include <iostream>
+#include "define.h"
 #ifndef _DEVICE_TYPE_
 #define _DEVICE_TYPE_ CL_DEVICE_TYPE_GPU
 #endif

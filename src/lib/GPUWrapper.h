@@ -11,7 +11,6 @@
 
 namespace GPU {
 
-
 	class DeviceWrapper {
 		public:
 			DeviceWrapper(cl_platform_id &platform);

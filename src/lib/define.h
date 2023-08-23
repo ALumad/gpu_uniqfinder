@@ -1,4 +1,5 @@
 #pragma once
+
 #include <CL/cl.h>
 #include <string>
 #include <exception>
@@ -22,14 +23,3 @@ void inline reportError(cl_int err, const std::string &filename, int line)
 
 
 #define OCL_SAFE_CALL(expr) reportError(expr, __FILE__, __LINE__)
-
-
-
-namespace Setting {
-    const size_t VECTOR_SIZE = 10000000;
-    const size_t MIN = 1;
-    const size_t MAX = 1000;
-    const size_t UNIQUE_COUNT = 1000;
-    
-};
-
