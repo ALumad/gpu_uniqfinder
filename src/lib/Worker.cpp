@@ -14,7 +14,8 @@
 
 std::vector<int> GPUWorker::Run(std::vector<int>& inarr, const size_t out_size){
   
-    std::vector<int> res(out_size, 0);
+    std::vector<int> res(out_size, 0); 
+    std::vector<char> fillness_check(out_size, 0); 
     cl_platform_id platform;
     cl_int err;
     
@@ -24,20 +25,21 @@ std::vector<int> GPUWorker::Run(std::vector<int>& inarr, const size_t out_size){
     cl_command_queue& queue = dwrapper.GetQueue(); 
     cl_context context = dwrapper.GetContext();
 
-    cl_mem a_buff = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(int)*inarr.size(), inarr.data(), &err);
-    cl_mem res_buff = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(int)*out_size, res.data(), &err);
-    
-    dwrapper.AddParametrInProgram(0, sizeof(cl_mem), &a_buff);
-    dwrapper.AddParametrInProgram(1, sizeof(cl_mem), &res_buff); 
-    dwrapper.AddParametrInProgram(2, sizeof(int), (void*)&out_size); 
+    GPU::MemoryManager gmm;
 
-    const clock_t begin_time = clock();
+    cl_mem a_buff = gmm.AddParametr(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(int)*inarr.size(), inarr.data(), &err);
+    cl_mem res_buff = gmm.AddParametr(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(int)*out_size, res.data(), &err);
+    cl_mem check_buff = gmm.AddParametr(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(char)*out_size, fillness_check.data(), &err);
+
+    dwrapper.AddParametrInProgram(0, sizeof(cl_mem), &a_buff);
+    dwrapper.AddParametrInProgram(1, sizeof(cl_mem), &res_buff);
+    dwrapper.AddParametrInProgram(2, sizeof(cl_mem), &check_buff);
+    dwrapper.AddParametrInProgram(3, sizeof(int), (void*)&out_size);
+
     const auto VECTOR_SIZE = inarr.size();
 
     OCL_SAFE_CALL(clEnqueueNDRangeKernel(queue, kernel, 1, NULL, &VECTOR_SIZE, NULL, 0, NULL, NULL));
     OCL_SAFE_CALL(clEnqueueReadBuffer(queue, res_buff, CL_TRUE, 0, sizeof(int)*out_size, res.data(), 0, NULL, NULL));
 
-    clReleaseMemObject(a_buff);
-    clReleaseMemObject(res_buff);
     return res;
 }
