@@ -56,6 +56,39 @@ TEST(GPUFindUniq, test_1000_and_10_000_000_RANDOM_1000){
 }
 
 
+TEST(GPUFindUniq, test_10_and_10_RANDOM_10){
+    const size_t VECTOR_SIZE = 10;
+    const size_t UNIQUE_SIZE = 10;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1, std::numeric_limits<int>::max());
+
+    std::unordered_set<int> tmp;
+    while(tmp.size() < UNIQUE_SIZE) {
+       tmp.insert(distrib(gen));
+    }
+
+    std::vector<int> arr(tmp.begin(), tmp.end());
+    run_test(arr, UNIQUE_SIZE);
+}
+
+TEST(GPUFindUniq, test_1_and_10_RANDOM_1){
+    const size_t VECTOR_SIZE = 10;
+    const size_t UNIQUE_SIZE = 1;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1, std::numeric_limits<int>::max());
+
+    std::unordered_set<int> tmp;
+    while(tmp.size() < UNIQUE_SIZE) {
+       tmp.insert(distrib(gen));
+    }
+
+    std::vector<int> arr(tmp.begin(), tmp.end());
+    run_test(arr, UNIQUE_SIZE);
+}
+
+
 TEST(GPUFindUniq, test_99_and_111111_MIN_99_MAX_1){
     const size_t VECTOR_SIZE = 111111;
     const size_t UNIQUE_SIZE = 99;
